@@ -1,9 +1,6 @@
 name: "Automerge Dependabot PRs"
 
-on:
-  workflow_run:
-    workflows: ["Tests"]
-    types: [completed]
+on: pull_request_target
 
 permissions: write-all
 
@@ -12,11 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - name: "Get Dependabot metadata"
-        id: dependabot-metadata
-        uses: dependabot/fetch-metadata@v1.1.1
+      - name: Wait for tests to succeed
+        uses: lewagon/wait-on-check-action@v1.3.1
         with:
-          github-token: ${{ github.token }}
+          ref: ${{ github.ref }}
+          check-name: "Tests"
+          repo-token: ${{ github.token }}
+          wait-interval: 10
 
       - name: "Approve the PR"
         run: gh pr review --approve "$PR_URL"
