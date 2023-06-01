@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  pull_request_target:
     branches:
       - main
 
@@ -32,7 +32,7 @@ jobs:
       - name: Test
         run: |
           echo "this is a fake test"
-          
+
   auto-merge:
     needs: test
     runs-on: ubuntu-latest
