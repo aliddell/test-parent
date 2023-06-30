@@ -32,7 +32,7 @@ jobs:
       - name: Test
         run: |
           echo "this is a fake test"
-          
+
   merge:
     name: Merge Dependabot PRs
     runs-on: "ubuntu-latest"
@@ -55,4 +55,4 @@ jobs:
           base: ${{ github.event.pull_request.base.ref }}
           delete-branch: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
