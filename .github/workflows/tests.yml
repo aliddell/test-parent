@@ -32,4 +32,27 @@ jobs:
       - name: Test
         run: |
           echo "this is a fake test"
+          
+  merge:
+    name: Merge Dependabot PRs
+    runs-on: "ubuntu-latest"
+    needs: test
+    if: ${{ github.event_name == 'pull_request_target' && github.event.pull_request.user.login == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository }}
 
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Merge PR
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: 'Merge Dependabot PR'
+          title: 'Merge Dependabot PR'
+          branch: ${{ github.event.pull_request.head.ref }}
+          base: ${{ github.event.pull_request.base.ref }}
+          delete-branch: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
