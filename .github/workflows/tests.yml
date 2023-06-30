@@ -33,21 +33,3 @@ jobs:
         run: |
           echo "this is a fake test"
 
-  auto-merge:
-    needs: test
-    runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot[bot]' }}
-    steps:
-      - name: "Approve the PR"
-        run: gh pr review --approve "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.PAT }}
-
-      # Don't auto-merge major version updates
-      - name: "Auto-merge Dependabot PRs"
-        if: ${{ steps.dependabot-metadata.outputs.update-type != 'version-update:semver-major' }}
-        run: gh pr merge --auto --squash "$PR_URL"
-        env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.PAT }}
